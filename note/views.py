@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
+
 def main(request):
     return render(request, 'index.html')
 
@@ -53,3 +54,18 @@ def register_view(request):
 def logout_view(request):
     logout(request)
     return redirect("login")
+
+def edit(request, id):
+    note = get_object_or_404(Note, id=id)
+    if request.method == "POST":
+        note.title = request.POST.get('title')
+        note.content = request.POST.get('content')
+        note.save()
+        return redirect('user-note')
+    return render(request, 'detail.html', {'note': note})
+
+def delete(request, id):
+    note = get_object_or_404(Note, id=id)
+    note.delete()
+    return redirect('user-note')
+
